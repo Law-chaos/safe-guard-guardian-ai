@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   User, 
@@ -7,11 +7,8 @@ import {
   Phone, 
   Shield, 
   Pill, 
-  VolumeX, 
-  Settings, 
   HelpCircle, 
   LogOut,
-  Menu,
   X
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -32,8 +29,6 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     { icon: <Phone size={20} />, label: 'Rapid Response Contacts', path: '/emergency' },
     { icon: <Shield size={20} />, label: 'Personal Safety Score', path: '/safety-score' },
     { icon: <Pill size={20} />, label: 'Medical Information', path: '/medical' },
-    { icon: <VolumeX size={20} />, label: 'Audio Monitoring', path: '/audio' },
-    { icon: <Settings size={20} />, label: 'Settings', path: '/settings' },
     { icon: <HelpCircle size={20} />, label: 'About the App', path: '/about' },
   ];
 

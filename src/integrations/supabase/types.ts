@@ -9,7 +9,207 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      achievements: {
+        Row: {
+          description: string
+          earned_at: string
+          icon: string | null
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          description: string
+          earned_at?: string
+          icon?: string | null
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          description?: string
+          earned_at?: string
+          icon?: string | null
+          id?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      documents: {
+        Row: {
+          created_at: string
+          file_path: string
+          id: string
+          name: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          file_path: string
+          id?: string
+          name: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          file_path?: string
+          id?: string
+          name?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      medical_providers: {
+        Row: {
+          address: string | null
+          created_at: string
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          specialty: string | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          specialty?: string | null
+          type: string
+          user_id: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          specialty?: string | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      medications: {
+        Row: {
+          created_at: string
+          dosage: string | null
+          frequency: string | null
+          id: string
+          name: string
+          notes: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          dosage?: string | null
+          frequency?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          dosage?: string | null
+          frequency?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          age: number | null
+          allergies: string | null
+          blood_type: string | null
+          full_name: string | null
+          gender: string | null
+          id: string
+          profile_image: string | null
+        }
+        Insert: {
+          age?: number | null
+          allergies?: string | null
+          blood_type?: string | null
+          full_name?: string | null
+          gender?: string | null
+          id: string
+          profile_image?: string | null
+        }
+        Update: {
+          age?: number | null
+          allergies?: string | null
+          blood_type?: string | null
+          full_name?: string | null
+          gender?: string | null
+          id?: string
+          profile_image?: string | null
+        }
+        Relationships: []
+      }
+      safety_scores: {
+        Row: {
+          id: string
+          last_updated: string
+          score: number
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          last_updated?: string
+          score?: number
+          user_id: string
+        }
+        Update: {
+          id?: string
+          last_updated?: string
+          score?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      trusted_contacts: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          phone: string
+          relationship: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          phone: string
+          relationship?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          phone?: string
+          relationship?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

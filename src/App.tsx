@@ -12,6 +12,11 @@ import LoginPage from "./screens/LoginPage";
 import SignupPage from "./screens/SignupPage";
 import MainPage from "./screens/MainPage";
 import ProfilePage from "./screens/ProfilePage";
+import TrustedContactsPage from "./pages/TrustedContactsPage";
+import EmergencyContactsPage from "./pages/EmergencyContactsPage";
+import SafetyScorePage from "./pages/SafetyScorePage";
+import MedicalInfoPage from "./pages/MedicalInfoPage";
+import AboutAppPage from "./pages/AboutAppPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -60,6 +65,46 @@ const AppContent = () => {
         element={
           <ProtectedRoute>
             <ProfilePage />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/contacts" 
+        element={
+          <ProtectedRoute>
+            <TrustedContactsPage />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/emergency" 
+        element={
+          <ProtectedRoute>
+            <EmergencyContactsPage />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/safety-score" 
+        element={
+          <ProtectedRoute>
+            <SafetyScorePage />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/medical" 
+        element={
+          <ProtectedRoute>
+            <MedicalInfoPage />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/about" 
+        element={
+          <ProtectedRoute>
+            <AboutAppPage />
           </ProtectedRoute>
         } 
       />
