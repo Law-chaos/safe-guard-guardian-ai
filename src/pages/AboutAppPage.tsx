@@ -9,6 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import Shield from '@/components/icons/Shield';
 
 const AboutAppPage = () => {
   const navigate = useNavigate();
