@@ -5,53 +5,70 @@ import { ArrowLeft, Upload, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 
-const ProfileContent = () => {
+const ProfilePage = () => {
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
   const [gender, setGender] = useState('');
   const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   
-  const { isAuthenticated, user } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   
-  // Redirect if not authenticated
+  // Load profile data from Supabase when component mounts
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login');
-    }
-    
-    // Load saved profile data from localStorage
-    const loadProfile = () => {
-      if (user?.email) {
-        const savedProfile = localStorage.getItem(`profile_${user.email}`);
-        if (savedProfile) {
-          const profile = JSON.parse(savedProfile);
-          setName(profile.name || '');
-          setAge(profile.age || '');
-          setGender(profile.gender || '');
-          setProfileImage(profile.profileImage || null);
+    const fetchProfile = async () => {
+      if (user?.id) {
+        try {
+          setLoading(true);
+          // Here we would fetch the user profile data from Supabase
+          // For now, we'll just use local storage as a placeholder
+          // In a real app, you'd create a profiles table in Supabase and query it
+          const savedProfile = localStorage.getItem(`profile_${user.email}`);
+          if (savedProfile) {
+            const profile = JSON.parse(savedProfile);
+            setName(profile.name || '');
+            setAge(profile.age || '');
+            setGender(profile.gender || '');
+            setProfileImage(profile.profileImage || null);
+          }
+        } catch (error) {
+          console.error('Error fetching profile:', error);
+        } finally {
+          setLoading(false);
         }
       }
     };
     
-    loadProfile();
-  }, [isAuthenticated, navigate, user]);
+    fetchProfile();
+  }, [user]);
   
-  const handleSaveProfile = () => {
+  const handleSaveProfile = async () => {
     if (user?.email) {
-      const profileData = {
-        name,
-        age,
-        gender,
-        profileImage,
-      };
-      
-      localStorage.setItem(`profile_${user.email}`, JSON.stringify(profileData));
-      
-      // Show success message
-      alert('Profile updated successfully');
+      try {
+        setLoading(true);
+        
+        const profileData = {
+          name,
+          age,
+          gender,
+          profileImage,
+        };
+        
+        // Temporary: storing in localStorage until we implement Supabase profiles table
+        localStorage.setItem(`profile_${user.email}`, JSON.stringify(profileData));
+        
+        // Show success message
+        alert('Profile updated successfully');
+      } catch (error) {
+        console.error('Error saving profile:', error);
+        alert('Failed to update profile');
+      } finally {
+        setLoading(false);
+      }
     }
   };
   
@@ -65,10 +82,6 @@ const ProfileContent = () => {
       reader.readAsDataURL(file);
     }
   };
-  
-  if (!isAuthenticated) {
-    return null; // Don't render anything while redirecting
-  }
   
   return (
     <div className="min-h-screen bg-safeguard-gradient">
@@ -152,22 +165,15 @@ const ProfileContent = () => {
               <Button 
                 onClick={handleSaveProfile}
                 className="w-full bg-safeguard-primary hover:opacity-90"
+                disabled={loading}
               >
-                Save Profile
+                {loading ? 'Saving...' : 'Save Profile'}
               </Button>
             </div>
           </div>
         </div>
       </main>
     </div>
-  );
-};
-
-const ProfilePage = () => {
-  return (
-    <AuthProvider>
-      <ProfileContent />
-    </AuthProvider>
   );
 };
 

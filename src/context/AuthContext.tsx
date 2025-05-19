@@ -2,14 +2,12 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
-
-interface User {
-  email: string;
-  name?: string;
-}
+import { supabase } from '@/integrations/supabase/client';
+import { User, Session } from '@supabase/supabase-js';
 
 interface AuthContextType {
   user: User | null;
+  session: Session | null;
   login: (email: string, password: string) => Promise<boolean>;
   signup: (email: string, password: string, confirmPassword: string) => Promise<boolean>;
   logout: () => void;
@@ -32,61 +30,66 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  // Check for stored user on mount
+  // Set up auth state listener and check for existing session
   useEffect(() => {
-    const storedUser = localStorage.getItem('safeguardUser');
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-        setIsAuthenticated(true);
-      } catch (error) {
-        console.error('Failed to parse stored user:', error);
-        localStorage.removeItem('safeguardUser');
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, currentSession) => {
+        setSession(currentSession);
+        setUser(currentSession?.user ?? null);
+        setIsAuthenticated(!!currentSession);
+        
+        // If the user logs in, redirect to main page
+        if (event === 'SIGNED_IN' && window.location.pathname === '/login') {
+          navigate('/main');
+        }
+        
+        // If the user logs out, redirect to login page
+        if (event === 'SIGNED_OUT') {
+          navigate('/login');
+        }
       }
-    }
-  }, []);
+    );
 
-  // Mock user database as we don't have backend
-  const getUserDatabase = (): Record<string, { password: string }> => {
-    const usersJson = localStorage.getItem('safeguardUsers');
-    return usersJson ? JSON.parse(usersJson) : {};
-  };
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      setSession(currentSession);
+      setUser(currentSession?.user ?? null);
+      setIsAuthenticated(!!currentSession);
+    });
 
-  const saveUserDatabase = (users: Record<string, { password: string }>) => {
-    localStorage.setItem('safeguardUsers', JSON.stringify(users));
-  };
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [navigate]);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      // Simulate network request
-      await new Promise(resolve => setTimeout(resolve, 500));
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
       
-      const users = getUserDatabase();
-      
-      if (users[email] && users[email].password === password) {
-        const userData = { email };
-        setUser(userData);
-        setIsAuthenticated(true);
-        localStorage.setItem('safeguardUser', JSON.stringify(userData));
-        
-        toast({
-          title: "Login Successful",
-          description: "Welcome back to SafeGuard!",
-        });
-        
-        return true;
-      } else {
+      if (error) {
         toast({
           variant: "destructive",
           title: "Login Failed",
-          description: "Invalid email or password",
+          description: error.message,
         });
         return false;
       }
+      
+      toast({
+        title: "Login Successful",
+        description: "Welcome back to SafeGuard!",
+      });
+      
+      return true;
     } catch (error) {
       console.error('Login error:', error);
       toast({
@@ -109,27 +112,23 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return false;
       }
 
-      // Simulate network request
-      await new Promise(resolve => setTimeout(resolve, 500));
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password
+      });
       
-      const users = getUserDatabase();
-      
-      if (users[email]) {
+      if (error) {
         toast({
           variant: "destructive",
           title: "Signup Failed",
-          description: "Email already in use",
+          description: error.message,
         });
         return false;
       }
       
-      // Add new user
-      users[email] = { password };
-      saveUserDatabase(users);
-      
       toast({
         title: "Signup Successful",
-        description: "Your account has been created!",
+        description: "Your account has been created! Please check your email for verification.",
       });
       
       return true;
@@ -144,11 +143,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    const { error } = await supabase.auth.signOut();
+    
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Logout Failed",
+        description: error.message,
+      });
+      return;
+    }
+    
     setUser(null);
+    setSession(null);
     setIsAuthenticated(false);
-    localStorage.removeItem('safeguardUser');
-    navigate('/login');
     
     toast({
       title: "Logged out",
@@ -158,6 +167,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const value = {
     user,
+    session,
     login,
     signup,
     logout,

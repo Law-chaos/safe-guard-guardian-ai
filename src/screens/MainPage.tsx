@@ -1,26 +1,17 @@
 
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import { Menu, Sun, Moon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Sidebar from '@/components/navigation/Sidebar';
-import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 
-const MainContent = () => {
+const MainPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [sosPressed, setSosPressed] = useState(false);
-  const { isAuthenticated, user } = useAuth();
-  const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuth();
   const { toast } = useToast();
-  
-  // Redirect if not authenticated
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login');
-    }
-  }, [isAuthenticated, navigate]);
   
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
@@ -45,10 +36,6 @@ const MainContent = () => {
       setSosPressed(false);
     }, 500);
   };
-  
-  if (!isAuthenticated) {
-    return null; // Don't render anything while redirecting
-  }
   
   return (
     <div className={`min-h-screen ${isDarkMode ? 'dark bg-gray-900' : 'bg-safeguard-gradient'}`}>
@@ -108,14 +95,6 @@ const MainContent = () => {
       {/* Sidebar */}
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
     </div>
-  );
-};
-
-const MainPage = () => {
-  return (
-    <AuthProvider>
-      <MainContent />
-    </AuthProvider>
   );
 };
 
