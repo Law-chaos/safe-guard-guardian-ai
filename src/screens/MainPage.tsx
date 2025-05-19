@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import Sidebar from '@/components/navigation/Sidebar';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
+import { AiChatbot } from '@/components/ui/ai-chatbot';
 
 const MainPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -91,6 +92,9 @@ const MainPage = () => {
           <p className="text-white text-center mt-4">Press in case of emergency</p>
         </div>
       </main>
+      
+      {/* AI Chatbot */}
+      <AiChatbot />
       
       {/* Sidebar */}
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
