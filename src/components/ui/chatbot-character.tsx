@@ -63,7 +63,7 @@ const ChatbotCharacter: React.FC<ChatbotCharacterProps> = ({ isExpanded, onToggl
         <Bot className="h-6 w-6" />
       </button>
       
-      <style jsx>{`
+      <style dangerouslySetInnerHTML={{__html: `
         .arrow-down {
           position: absolute;
           bottom: -8px;
@@ -81,7 +81,7 @@ const ChatbotCharacter: React.FC<ChatbotCharacterProps> = ({ isExpanded, onToggl
         .animate-fade-in {
           animation: fadeIn 0.3s ease-out forwards;
         }
-      `}</style>
+      `}} />
     </div>
   );
 };
