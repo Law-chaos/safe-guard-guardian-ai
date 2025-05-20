@@ -1,7 +1,7 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bot, X, Send, Loader2, MessageSquare } from 'lucide-react';
+import { X, Send, Loader2, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -13,6 +13,7 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { useToast } from '@/hooks/use-toast';
+import ChatbotCharacter from './chatbot-character';
 
 interface CommandType {
   type: 'navigation' | 'action';
@@ -29,8 +30,16 @@ export function AiChatbot() {
   const [conversation, setConversation] = useState<Array<{role: 'user' | 'assistant', content: string}>>([
     { role: 'assistant', content: 'Hi! I\'m SafeGuard Assistant. How can I help you today?' }
   ]);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Scroll to bottom of chat when messages update
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [conversation]);
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -205,25 +214,34 @@ export function AiChatbot() {
     processMessage(input);
   };
 
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <>
-      <Button
-        variant="outline"
-        size="icon"
-        className="fixed right-4 bottom-4 h-12 w-12 rounded-full bg-safeguard-primary text-white shadow-lg hover:bg-safeguard-primary/90"
-        onClick={() => setOpen(true)}
-      >
-        <MessageSquare size={24} />
-      </Button>
+      <div className="fixed right-4 bottom-4 z-50">
+        <ChatbotCharacter 
+          isExpanded={open}
+          onToggleExpand={() => setOpen(!open)}
+        />
+      </div>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
         <div className="flex flex-col h-[80vh]">
           <div className="flex items-center justify-between border-b px-3 py-2">
             <div className="flex items-center gap-2">
-              <Bot className="h-5 w-5 text-safeguard-primary" />
+              <div className="h-6 w-6 bg-safeguard-primary rounded-full flex items-center justify-center">
+                <div className="h-3 w-3 bg-white rounded-full"></div>
+              </div>
               <h2 className="font-semibold">SafeGuard Assistant</h2>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => setOpen(false)}>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={handleClose}
+              className="focus:outline-none"
+            >
               <X className="h-4 w-4" />
             </Button>
           </div>
@@ -254,6 +272,7 @@ export function AiChatbot() {
                 </div>
               </div>
             )}
+            <div ref={messagesEndRef} />
           </div>
           
           <div className="border-t p-3">
