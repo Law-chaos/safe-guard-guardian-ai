@@ -3,8 +3,8 @@ class AlarmSystem {
   private audioInstance: HTMLAudioElement | null = null;
   private isPlaying: boolean = false;
 
-  // Initialize with the sound URL
-  constructor(private soundUrl: string = 'https://www.soundjay.com/buttons/sounds/beep-08b.mp3') {}
+  // Initialize with the sound URL - updated to a more attention-grabbing alarm
+  constructor(private soundUrl: string = 'https://assets.mixkit.co/active_storage/sfx/212/212.wav') {}
 
   // Start the alarm sound
   startAlarm(): void {

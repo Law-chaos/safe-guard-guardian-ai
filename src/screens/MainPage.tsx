@@ -18,9 +18,12 @@ const MainPage = () => {
   const { user, isAuthenticated } = useAuth();
   const { toast } = useToast();
   
-  // Load user name from profile if available
+  // Load user name from localStorage if available
   useEffect(() => {
-    if (user?.email) {
+    const storedName = localStorage.getItem('user_name');
+    if (storedName) {
+      setUserName(storedName);
+    } else if (user?.email) {
       try {
         const savedProfile = localStorage.getItem(`profile_${user.email}`);
         if (savedProfile) {

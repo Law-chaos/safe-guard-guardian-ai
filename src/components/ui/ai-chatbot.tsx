@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Send, Loader2, MessageSquare } from 'lucide-react';
+import { Send, Loader2, X, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -164,6 +163,10 @@ export function AiChatbot() {
       response = "Opening about page.";
       setTimeout(() => navigate('/about'), 1000);
     }
+    else if (msgLower.includes('self defense') || msgLower.includes('defense videos') || msgLower.includes('videos')) {
+      response = "Opening self-defense videos.";
+      setTimeout(() => navigate('/self-defense'), 1000);
+    }
     // Check for action intents
     else if (msgLower.includes('sos') || msgLower.includes('emergency') || msgLower.includes('help me')) {
       response = "SOS alert triggered! Emergency contacts are being notified of your situation.";
@@ -185,7 +188,7 @@ export function AiChatbot() {
     }
     // General help
     else if (msgLower.includes('help') || msgLower.includes('what can you do')) {
-      response = "I can help you navigate the app or perform quick actions. Try asking me to open a specific page like 'open my profile', 'show emergency contacts', or actions like 'trigger SOS alert'.";
+      response = "I can help you navigate the app or perform quick actions. Try asking me to open a specific page like 'open my profile', 'show emergency contacts', 'show self defense videos', or actions like 'trigger SOS alert'.";
     }
 
     // Simulate network delay
@@ -214,10 +217,6 @@ export function AiChatbot() {
     processMessage(input);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   return (
     <>
       <div className="fixed right-4 bottom-4 z-50">
@@ -239,7 +238,7 @@ export function AiChatbot() {
             <Button 
               variant="ghost" 
               size="icon" 
-              onClick={handleClose}
+              onClick={() => setOpen(false)}
               className="focus:outline-none"
             >
               <X className="h-4 w-4" />

@@ -17,6 +17,7 @@ import EmergencyContactsPage from "./pages/EmergencyContactsPage";
 import SafetyScorePage from "./pages/SafetyScorePage";
 import MedicalInfoPage from "./pages/MedicalInfoPage";
 import AboutAppPage from "./pages/AboutAppPage";
+import SelfDefensePage from "./pages/SelfDefensePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -105,6 +106,14 @@ const AppContent = () => {
         element={
           <ProtectedRoute>
             <AboutAppPage />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/self-defense" 
+        element={
+          <ProtectedRoute>
+            <SelfDefensePage />
           </ProtectedRoute>
         } 
       />

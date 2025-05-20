@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Bot } from 'lucide-react';
+import { Hand } from 'lucide-react';
 
 interface ChatbotCharacterProps {
   isExpanded: boolean;
@@ -10,6 +10,7 @@ interface ChatbotCharacterProps {
 const ChatbotCharacter: React.FC<ChatbotCharacterProps> = ({ isExpanded, onToggleExpand }) => {
   const [isBouncing, setIsBouncing] = useState(false);
   const [showGreeting, setShowGreeting] = useState(false);
+  const [isWaving, setIsWaving] = useState(false);
   
   // Bounce animation on initial load
   useEffect(() => {
@@ -17,6 +18,12 @@ const ChatbotCharacter: React.FC<ChatbotCharacterProps> = ({ isExpanded, onToggl
     setTimeout(() => {
       setIsBouncing(false);
       setShowGreeting(true);
+      setIsWaving(true);
+      
+      // Stop hand waving after some time
+      setTimeout(() => {
+        setIsWaving(false);
+      }, 2000);
     }, 1000);
     
     // Hide greeting after some time
@@ -60,7 +67,9 @@ const ChatbotCharacter: React.FC<ChatbotCharacterProps> = ({ isExpanded, onToggl
           ${isExpanded ? 'scale-0 opacity-0' : 'scale-100 opacity-100'}
         `}
       >
-        <Bot className="h-6 w-6" />
+        <Hand 
+          className={`h-6 w-6 ${isWaving ? 'animate-waving' : ''}`}
+        />
       </button>
       
       <style dangerouslySetInnerHTML={{__html: `
@@ -78,8 +87,17 @@ const ChatbotCharacter: React.FC<ChatbotCharacterProps> = ({ isExpanded, onToggl
           from { opacity: 0; transform: translateY(10px); }
           to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes waving {
+          0%, 100% { transform: rotate(0deg); }
+          25% { transform: rotate(-20deg); }
+          75% { transform: rotate(15deg); }
+        }
         .animate-fade-in {
           animation: fadeIn 0.3s ease-out forwards;
+        }
+        .animate-waving {
+          animation: waving 0.5s ease-in-out infinite;
+          transform-origin: bottom center;
         }
       `}} />
     </div>
