@@ -13,27 +13,11 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+// Simple login schema with basic validation
 const loginSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   email: z.string().email({ message: "Invalid email address" }),
-  password: z.string()
-    .min(8, { message: "Password must be at least 8 characters" })
-    .refine(
-      (value) => /[A-Z]/.test(value),
-      { message: "Password must contain at least one uppercase letter" }
-    )
-    .refine(
-      (value) => /[a-z]/.test(value),
-      { message: "Password must contain at least one lowercase letter" }
-    )
-    .refine(
-      (value) => /[0-9]/.test(value),
-      { message: "Password must contain at least one number" }
-    )
-    .refine(
-      (value) => /[^A-Za-z0-9]/.test(value),
-      { message: "Password must contain at least one special character" }
-    )
+  password: z.string().min(1, { message: "Password is required" })
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -46,7 +30,7 @@ const LoginContent = () => {
   const { login, isAuthenticated } = useAuth();
   const { toast } = useToast();
   
-  // Form setup with validation
+  // Form setup with simple validation
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -86,11 +70,11 @@ const LoginContent = () => {
   
   return (
     <Layout className="flex items-center justify-center px-6">
-      <div className="w-full max-w-5xl grid md:grid-cols-2 gap-8 bg-white rounded-lg shadow-xl p-8 animate-fade-in">
+      <div className="w-full max-w-5xl grid md:grid-cols-2 gap-8 bg-white rounded-lg shadow-xl p-8 animate-fade-in dark:bg-gray-800 dark:text-white">
         {/* Login Form */}
         <div className="space-y-6">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-safeguard-primary">Login to Your Account</h1>
+            <h1 className="text-3xl font-bold text-safeguard-primary dark:text-safeguard-secondary">Login to Your Account</h1>
           </div>
           
           <Form {...form}>
@@ -159,7 +143,7 @@ const LoginContent = () => {
               
               <Button 
                 type="submit" 
-                className="w-full bg-safeguard-primary hover:opacity-90 font-semibold text-lg py-6"
+                className="w-full bg-safeguard-primary hover:opacity-90 font-semibold text-lg py-6 dark:bg-safeguard-secondary dark:text-black"
                 disabled={isLoading}
               >
                 {isLoading ? 'Logging in...' : 'Login'}
@@ -170,11 +154,11 @@ const LoginContent = () => {
           <div className="mt-8 text-center">
             <p className="font-bold">New Here?</p>
             <p className="mb-2">Sign Up</p>
-            <p className="text-gray-500 mb-4">Your safety is our priority...</p>
+            <p className="text-gray-500 dark:text-gray-400 mb-4">Your safety is our priority...</p>
             <Button 
               variant="outline"
               onClick={() => navigate('/signup')} 
-              className="w-full border-safeguard-primary text-safeguard-primary hover:bg-safeguard-primary hover:text-white"
+              className="w-full border-safeguard-primary dark:border-safeguard-secondary text-safeguard-primary dark:text-safeguard-secondary hover:bg-safeguard-primary hover:text-white dark:hover:bg-safeguard-secondary dark:hover:text-black"
             >
               Sign Up
             </Button>

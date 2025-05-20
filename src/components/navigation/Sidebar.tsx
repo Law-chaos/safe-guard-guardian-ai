@@ -17,9 +17,10 @@ import { useAuth } from '@/context/AuthContext';
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  extraContent?: React.ReactNode;
 }
 
-const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
+const Sidebar = ({ isOpen, onClose, extraContent }: SidebarProps) => {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
@@ -42,19 +43,20 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
       {/* Overlay */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity"
           onClick={onClose}
         />
       )}
       
       {/* Sidebar */}
       <div className={`
-        fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-50
+        fixed top-0 left-0 h-full w-72 bg-white shadow-lg z-50
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+        dark:bg-gray-800 dark:text-white
       `}>
-        <div className="flex justify-between items-center p-4 border-b">
-          <h2 className="text-xl font-bold text-safeguard-primary">SafeGuard</h2>
+        <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
+          <h2 className="text-xl font-bold text-safeguard-primary dark:text-safeguard-secondary">SafeGuard</h2>
           <Button 
             variant="ghost" 
             size="icon"
@@ -64,13 +66,20 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
           </Button>
         </div>
         
+        {/* Extra content (Profile, Brightness controls, etc.) */}
+        {extraContent && (
+          <div className="border-b dark:border-gray-700">
+            {extraContent}
+          </div>
+        )}
+        
         <nav className="p-4">
           <ul className="space-y-2">
             {menuItems.map((item, index) => (
               <li key={index}>
                 <Button 
                   variant="ghost" 
-                  className="w-full justify-start text-gray-700 hover:text-safeguard-primary hover:bg-gray-100"
+                  className="w-full justify-start text-gray-700 hover:text-safeguard-primary hover:bg-gray-100 dark:text-gray-300 dark:hover:text-safeguard-secondary dark:hover:bg-gray-700"
                   onClick={() => handleNavigation(item.path)}
                 >
                   <span className="mr-3">{item.icon}</span>
@@ -79,10 +88,10 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
               </li>
             ))}
             
-            <li className="pt-4 mt-4 border-t">
+            <li className="pt-4 mt-4 border-t dark:border-gray-700">
               <Button 
                 variant="ghost" 
-                className="w-full justify-start text-red-500 hover:text-red-700 hover:bg-red-50"
+                className="w-full justify-start text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900 dark:hover:bg-opacity-20"
                 onClick={logout}
               >
                 <LogOut size={20} className="mr-3" />
